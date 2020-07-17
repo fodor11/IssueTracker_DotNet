@@ -9,6 +9,7 @@ namespace IssueTracker.Models
     {
         Created,
         InProgress,
+        Suspended,
         Finished
     }
     public enum IssueDifficulty
@@ -17,20 +18,28 @@ namespace IssueTracker.Models
         Normal,
         Hard
     }
+    public enum IssuePriority
+    {
+        Low,
+        Normal,
+        High
+    }
     public class IssueModel
     {
         private int _id;
         private string _issueName;
         private string _description;
-        private IssueStatus _status;
         private double _progressPercenage;
+        private IssueStatus _status;
         private IssueDifficulty _difficulty;
+        private IssuePriority _priority;
         private List<UserModel> _addedUsers;
         private List<IssueModel> _subIssues;
         private IssueModel _parentIssue;
         private DateTime _creationDate;
         private DateTime _startingDate;
         private DateTime _finishingDate;
+        private DateTime _deadline;
 
         public int Id { get { return _id; } }
         public string IssueName 
@@ -48,14 +57,14 @@ namespace IssueTracker.Models
             get { return _status; } 
         }
         /// <summary>
-        /// How much is done of the issue (percentage)
+        /// How much is done of the issue (percentage). Works only if it doesn't have a child issue.
         /// </summary>
         /// <exception cref="System.ArgumentException">Thrown when the given value is out of [0.0; 1.0]</exception>
         public double Progress 
         {   get { return _progressPercenage; }
             set
             {
-                if (_subIssues==null)
+                if (_subIssues==null) 
                 {
                     if (value < 0.0 || value > 1.0)
                     {
@@ -63,6 +72,11 @@ namespace IssueTracker.Models
                     }
                     else
                     {
+                        if ( _startingDate == default(DateTime))
+                        {
+                            _startingDate = DateTime.Today;                            
+                        }
+                        _status = IssueStatus.InProgress;
                         _progressPercenage = value;
                         calcProgress();
                     }
@@ -70,13 +84,21 @@ namespace IssueTracker.Models
             }
         }
         /// <summary>
-        /// How difficult the task is on a scale of [easy - normal - hard]
+        /// How difficult the task is on a scale of [easy - normal - hard]. It acts as weight when calculating progress.
         /// (Not necessary for root issues)
         /// </summary>
         public IssueDifficulty Difficulty 
         { 
             get { return _difficulty; }
             set { _difficulty = value; }
+        }
+        /// <summary>
+        /// Priority of the issue
+        /// </summary>
+        public IssuePriority Priority
+        {
+            get { return _priority; }
+            set { _priority = value; }
         }
         /// <summary>
         /// The added users working on this issue. The first one is the creator/owner of the issue
@@ -116,11 +138,15 @@ namespace IssueTracker.Models
         { 
             get { return _finishingDate; }
         }
-
-        public IssueModel()
+        /// <summary>
+        /// The assigned deadline
+        /// </summary>
+        public DateTime DeadLine
         {
-
+            get { return _deadline; }
+            set { _deadline = value; }
         }
+        public IssueModel() { }
         public IssueModel(string name, string description, UserModel owner, IssueDifficulty difficulty = IssueDifficulty.Hard)
         {
             // set values
@@ -148,13 +174,62 @@ namespace IssueTracker.Models
             _parentIssue = parentIssue;
             parentIssue.AddSubIssue(this);
         }
+        /// <summary>
+        /// Adds a subissue to this issue
+        /// </summary>
+        /// <param name="issue">The issue</param>
         public void AddSubIssue(IssueModel issue)
         {
             if (_subIssues == null) _subIssues = new List<IssueModel>();
             _subIssues.Add(issue);
             calcProgress();
         }
-        
+        /// <summary>
+        /// Sets the starting date (if this is the very first time) and sets the status to "In Progress". Does the same to parent issues.
+        /// </summary>
+        public void StartIssue()
+        {
+            if (_startingDate == default(DateTime))
+            {
+                _startingDate = DateTime.Today;
+            }            
+            _status = IssueStatus.InProgress;
+            _parentIssue.StartIssue();
+        }
+        /// <summary>
+        /// Sets the status to suspended. Does the same to sub issues.
+        /// </summary>
+        public void SuspendIssue()
+        {
+            _status = IssueStatus.Suspended;
+            if (_subIssues!=null)
+            {
+                foreach (IssueModel item in _subIssues)
+                {
+                    item.SuspendIssue();
+                }
+            }
+        }
+        /// <summary>
+        /// Sets the status to finished, progress to 100%, and sets the finishing date. Does the same to sub issues.
+        /// </summary>
+        public void FinishIssue()
+        {
+            _status = IssueStatus.Finished;
+            _progressPercenage = 1.0;
+            if (_finishingDate == default(DateTime))
+            {
+                _finishingDate = DateTime.Today;
+            }
+            if (_subIssues != null)
+            {
+                foreach (IssueModel item in _subIssues)
+                {
+                    item.FinishIssue();
+                }
+            }
+        }
+
         /// <summary>
         /// Averages the progress of sub issues weighted by their difficulty, and calls the same method for parent issues
         /// </summary>
