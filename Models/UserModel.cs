@@ -25,11 +25,7 @@ namespace IssueTracker.Models
         public List<IssueModel> Issues { get; }
         public List<NotificationModel> Notifications { get; }
 
-        public UserModel()
-        {
-            _issues = new List<IssueModel>();
-            _notifications = new List<NotificationModel>();
-        }
+        public UserModel() { }
         public UserModel(string name, List<IssueModel> issues, List<NotificationModel> notifications)
         {
             _name = name;
@@ -40,10 +36,14 @@ namespace IssueTracker.Models
 
         public void AddNotification(NotificationModel notification)
         {
+            if (_notifications == null)
+            {
+                _notifications = new List<NotificationModel>();
+            }
             _notifications.Add(notification);            
         }
         //TODO: 
         //Notification remove (id), getFirst10, setRead
-        //Issues add, remove
+        //Issues add-> also at issues!, remove
     }
 }

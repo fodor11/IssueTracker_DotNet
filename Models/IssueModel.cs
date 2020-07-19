@@ -33,13 +33,14 @@ namespace IssueTracker.Models
         private IssueStatus _status;
         private IssueDifficulty _difficulty;
         private IssuePriority _priority;
-        private List<UserModel> _addedUsers;
-        private List<IssueModel> _subIssues;
-        private IssueModel _parentIssue;
         private DateTime _creationDate;
         private DateTime _startingDate;
         private DateTime _finishingDate;
         private DateTime _deadline;
+        private List<string> _addedFiles; //paths to the files uploded to this issue
+        private List<UserModel> _addedUsers;
+        private List<IssueModel> _subIssues;
+        private IssueModel _parentIssue;
 
         public int Id { get { return _id; } }
         public string IssueName 
@@ -117,6 +118,13 @@ namespace IssueTracker.Models
             set { _subIssues = value; }
         }
         /// <summary>
+        /// List of the paths to files that were uploaded to this issue
+        /// </summary>
+        public List<string> AddedFiles
+        {
+            get { return _addedFiles; }
+        }
+        /// <summary>
         /// When the issue was created
         /// </summary>
         public DateTime CreationDate
@@ -158,6 +166,7 @@ namespace IssueTracker.Models
             // add owner
             _addedUsers = new List<UserModel>();
             _addedUsers.Add(owner);
+            //TODO: owner.AddIssue
         }
         public IssueModel(string name, string description, IssueModel parentIssue, IssueDifficulty difficulty)
         {
@@ -170,6 +179,7 @@ namespace IssueTracker.Models
             // add owner
             _addedUsers = new List<UserModel>();
             _addedUsers.Add(parentIssue.AddedUsers[0]); //owner of the parent issue will be the owner of this issue
+            //TODO: owner.AddIssue
             // add parent issue
             _parentIssue = parentIssue;
             parentIssue.AddSubIssue(this);
@@ -229,7 +239,18 @@ namespace IssueTracker.Models
                 }
             }
         }
-
+        /// <summary>
+        /// Add the given file to the issue's files
+        /// </summary>
+        /// <param name="path">Path to the file</param>
+        public void AddFile(string path)
+        {
+            if (_addedFiles == null)
+            {
+                _addedFiles = new List<string>();
+                _addedFiles.Add(path);
+            }
+        }
         /// <summary>
         /// Averages the progress of sub issues weighted by their difficulty, and calls the same method for parent issues
         /// </summary>
@@ -251,7 +272,7 @@ namespace IssueTracker.Models
                 _parentIssue.calcProgress();
             }            
         }
-
+        //TODO: AddOwner() where the issue gets added to the owners list as well
         ////////////////////////////////// for testing ////////////////////////////////// 
         public void Print()
         {
