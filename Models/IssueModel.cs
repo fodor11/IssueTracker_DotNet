@@ -7,9 +7,21 @@ namespace IssueTracker.Models
 { 
     public enum IssueStatus
     {
+        /// <summary>
+        /// The issue is created, but the work did not started on it yet
+        /// </summary>
         Created,
+        /// <summary>
+        /// The issue is being worked on
+        /// </summary>
         InProgress,
+        /// <summary>
+        /// Work started on the issue, but it had to be suspended
+        /// </summary>
         Suspended,
+        /// <summary>
+        /// The work is done
+        /// </summary>
         Finished
     }
     public enum IssueDifficulty
@@ -20,8 +32,17 @@ namespace IssueTracker.Models
     }
     public enum IssuePriority
     {
+        /// <summary>
+        /// Not that important
+        /// </summary>
         Low,
+        /// <summary>
+        /// Average importance
+        /// </summary>
         Normal,
+        /// <summary>
+        /// Very important
+        /// </summary>
         High
     }
     public class IssueModel
@@ -29,7 +50,7 @@ namespace IssueTracker.Models
         private int _id;
         private string _issueName;
         private string _description;
-        private double _progressPercenage;
+        private double _progressPercentage;
         private IssueStatus _status;
         private IssueDifficulty _difficulty;
         private IssuePriority _priority;
@@ -62,7 +83,7 @@ namespace IssueTracker.Models
         /// </summary>
         /// <exception cref="System.ArgumentException">Thrown when the given value is out of [0.0; 1.0]</exception>
         public double Progress 
-        {   get { return _progressPercenage; }
+        {   get { return _progressPercentage; }
             set
             {
                 if (_subIssues==null) 
@@ -73,13 +94,13 @@ namespace IssueTracker.Models
                     }
                     else
                     {
-                        if ( _startingDate == default(DateTime))
+                        if (_startingDate == default(DateTime))
                         {
                             _startingDate = DateTime.Today;                            
                         }
                         _status = IssueStatus.InProgress;
-                        _progressPercenage = value;
-                        calcProgress();
+                        _progressPercentage = value;
+                        calcProgress(); // to update parent issues
                     }
                 }
             }
@@ -91,7 +112,11 @@ namespace IssueTracker.Models
         public IssueDifficulty Difficulty 
         { 
             get { return _difficulty; }
-            set { _difficulty = value; }
+            set 
+            { 
+                _difficulty = value;
+                calcProgress(); // the changed difficulty affects the progress of parent issues
+            }
         }
         /// <summary>
         /// Priority of the issue
@@ -107,7 +132,6 @@ namespace IssueTracker.Models
         public List<UserModel> AddedUsers
         {
             get { return _addedUsers; }
-            set { _addedUsers = value; }
         }
         /// <summary>
         /// The list of smaller issues that are part of this issue
@@ -115,7 +139,6 @@ namespace IssueTracker.Models
         public List<IssueModel> SubIssues
         {
             get { return _subIssues; }
-            set { _subIssues = value; }
         }
         /// <summary>
         /// List of the paths to files that were uploaded to this issue
@@ -155,35 +178,39 @@ namespace IssueTracker.Models
             set { _deadline = value; }
         }
         public IssueModel() { }
-        public IssueModel(string name, string description, UserModel owner, IssueDifficulty difficulty = IssueDifficulty.Hard)
+        /// <summary>
+        /// Constructor of an issue
+        /// </summary>
+        /// <param name="name">Name of the issue</param>
+        /// <param name="description">Description of the issue</param>
+        /// <param name="owner">Owner of the issue</param>
+        /// <param name="parentIssue">The root issue to whis this will be added (if this is not a root issue itself)</param>
+        /// <param name="difficulty">Difficulty of the issue</param>
+        /// <param name="status">Status of the issue</param>
+        /// <param name="priority">Priority of the issue</param>
+        public IssueModel(string name, string description, UserModel owner, IssueModel parentIssue = null,
+                          IssueDifficulty difficulty = IssueDifficulty.Normal, IssueStatus status = IssueStatus.Created,
+                          IssuePriority priority = IssuePriority.Normal)
         {
             // set values
             _issueName = name;
             _description = description;
             _difficulty = difficulty;
-            _progressPercenage = 0.0;
+            _status = status;
+            _priority = priority;
+            _progressPercentage = 0.0;
             _creationDate = DateTime.Today;
-            // add owner
+            // add owner to the issue, add the issue to the owner
             _addedUsers = new List<UserModel>();
             _addedUsers.Add(owner);
-            //TODO: owner.AddIssue
-        }
-        public IssueModel(string name, string description, IssueModel parentIssue, IssueDifficulty difficulty)
-        {
-            // set values
-            _issueName = name;
-            _description = description;
-            _difficulty = difficulty;
-            _progressPercenage = 0.0;
-            _creationDate = DateTime.Today;
-            // add owner
-            _addedUsers = new List<UserModel>();
-            _addedUsers.Add(parentIssue.AddedUsers[0]); //owner of the parent issue will be the owner of this issue
-            //TODO: owner.AddIssue
+            owner.AddIssue(this);
             // add parent issue
-            _parentIssue = parentIssue;
-            parentIssue.AddSubIssue(this);
-        }
+            if (_parentIssue != null)
+            {
+                _parentIssue = parentIssue;
+                parentIssue.AddSubIssue(this);
+            }
+        }       
         /// <summary>
         /// Adds a subissue to this issue
         /// </summary>
@@ -226,7 +253,7 @@ namespace IssueTracker.Models
         public void FinishIssue()
         {
             _status = IssueStatus.Finished;
-            _progressPercenage = 1.0;
+            _progressPercentage = 1.0;
             if (_finishingDate == default(DateTime))
             {
                 _finishingDate = DateTime.Today;
@@ -248,8 +275,62 @@ namespace IssueTracker.Models
             if (_addedFiles == null)
             {
                 _addedFiles = new List<string>();
-                _addedFiles.Add(path);
             }
+            _addedFiles.Add(path);
+        }
+        /// <summary>
+        /// Adds a user to this issue
+        /// </summary>
+        /// <param name="user">The user to be added to this issue</param>
+        public void AddUser(UserModel user)
+        {
+            if (_addedUsers == null)
+            {
+                _addedUsers = new List<UserModel>();
+            }            
+           _addedUsers.Add(user);
+            user.AddIssue(this);
+        }
+        /// <summary>
+        /// Removes a user to this issue
+        /// </summary>
+        /// <param name="user">The user to be removed from this issue</param>
+        public void RemoveUser(UserModel user)
+        {
+            if (_addedUsers != null) _addedUsers.Remove(user);
+            user.RemoveIssueFromUser(this);
+        }
+        /// <summary>
+        /// Deletes the issue, its sub issues, refreshes the progress of the parent issue
+        /// </summary>
+        /// <param name="root">Should always be left on TRUE. It means that this is the root issue that gets explicitly deleted.</param>
+        public void DeleteIssue(bool root = true)
+        {
+            //delete added users, and this issue from them
+            if (_addedUsers != null)
+            {
+                foreach (var item in _addedUsers)
+                {
+                    item.RemoveIssueFromUser(this);
+                    _addedUsers.Remove(item);
+                }
+            }
+            //delete subissues
+            if (_subIssues != null)
+            {
+                foreach (var item in _subIssues)
+                {
+                    item.DeleteIssue(false);
+                }
+            }
+            //delete this issue from parent issue and update its progress
+            if (root)
+            {
+                _parentIssue.SubIssues.Remove(this);
+                _parentIssue.calcProgress();
+            }
+            //TODO: delete uploaded files
+            //TODO: delete this from DB
         }
         /// <summary>
         /// Averages the progress of sub issues weighted by their difficulty, and calls the same method for parent issues
@@ -265,14 +346,13 @@ namespace IssueTracker.Models
                     sumPercentage += child.Progress * (int)child.Difficulty;
                     counter += (int)child.Difficulty;
                 }
-                _progressPercenage = sumPercentage / counter;
+                _progressPercentage = sumPercentage / counter;
             }
             if (_parentIssue != null)
             {
                 _parentIssue.calcProgress();
             }            
         }
-        //TODO: AddOwner() where the issue gets added to the owners list as well
         ////////////////////////////////// for testing ////////////////////////////////// 
         public void Print()
         {

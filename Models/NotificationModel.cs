@@ -7,11 +7,29 @@ namespace IssueTracker.Models
 {
     public enum NotificationType
     {
-        NewSubIssue,                   //A new subissue was assigned to an issue, on which the user is working
-        Progress,                      //Someone made progress on an issue, on which the user is working
-        FinishedIssue,                 //Someone finished an issue, on which the user is working
-        AssignedToIssue,               //The user was added to an issue
-        RemovedFromIssue,              //The user was removed from an issue
+        /// <summary>
+        /// A new subissue was assigned to an issue, on which the user is working
+        /// </summary>
+        NewSubIssue,
+        /// <summary>
+        /// Someone made progress on an issue, on which the user is working
+        /// </summary>
+        Progress,
+        /// <summary>
+        /// An issue was finished, on which the user was working
+        /// </summary>
+        FinishedIssue,
+        /// <summary>
+        /// The user was added to an issue
+        /// </summary>
+        AssignedToIssue,
+        /// <summary>
+        /// The user was removed from an issue
+        /// </summary>
+        RemovedFromIssue,
+        /// <summary>
+        /// For any other case
+        /// </summary>
         Other
     }
     public class NotificationModel
@@ -20,7 +38,7 @@ namespace IssueTracker.Models
         private string _message;
         private DateTime _date;
         private NotificationType _notifType;
-        private UserModel _owner;
+        private bool _seen = false;
 
         public int Id
         { 
@@ -40,6 +58,11 @@ namespace IssueTracker.Models
             get { return _notifType; }
             set { _notifType = value; }
         }
+        public bool Seen
+        {
+            get { return _seen; }
+            set { _seen = value; }
+        }
         public NotificationModel() {}
         /// <summary>
         /// Creates a notification and adds it to a user
@@ -52,9 +75,7 @@ namespace IssueTracker.Models
             _message = message;
             _notifType = nType;
             _date = DateTime.Today;
-            _owner = owner;
             owner.AddNotification(this);
         }
-
     }
 }
