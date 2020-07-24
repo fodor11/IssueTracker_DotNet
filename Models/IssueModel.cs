@@ -79,7 +79,7 @@ namespace IssueTracker.Models
             get { return _status; } 
         }
         /// <summary>
-        /// How much is done of the issue (percentage). Works only if it doesn't have a child issue.
+        /// How much is done of the issue (percentage). Can be set only if it doesn't have a child issue.
         /// </summary>
         /// <exception cref="System.ArgumentException">Thrown when the given value is out of [0.0; 1.0]</exception>
         public double Progress 
@@ -94,11 +94,7 @@ namespace IssueTracker.Models
                     }
                     else
                     {
-                        if (_startingDate == default(DateTime))
-                        {
-                            _startingDate = DateTime.Today;                            
-                        }
-                        _status = IssueStatus.InProgress;
+                        StartIssue();
                         _progressPercentage = value;
                         calcProgress(); // to update parent issues
                     }
@@ -205,7 +201,7 @@ namespace IssueTracker.Models
             _addedUsers.Add(owner);
             owner.AddIssue(this);
             // add parent issue
-            if (_parentIssue != null)
+            if (parentIssue != null)
             {
                 _parentIssue = parentIssue;
                 parentIssue.AddSubIssue(this);
@@ -231,7 +227,10 @@ namespace IssueTracker.Models
                 _startingDate = DateTime.Today;
             }            
             _status = IssueStatus.InProgress;
-            _parentIssue.StartIssue();
+            if (_parentIssue != null)
+            {
+                _parentIssue.StartIssue();
+            }  
         }
         /// <summary>
         /// Sets the status to suspended. Does the same to sub issues.
@@ -253,7 +252,7 @@ namespace IssueTracker.Models
         public void FinishIssue()
         {
             _status = IssueStatus.Finished;
-            _progressPercentage = 1.0;
+            Progress = 1.0;
             if (_finishingDate == default(DateTime))
             {
                 _finishingDate = DateTime.Today;
@@ -288,7 +287,7 @@ namespace IssueTracker.Models
             {
                 _addedUsers = new List<UserModel>();
             }            
-           _addedUsers.Add(user);
+            _addedUsers.Add(user);
             user.AddIssue(this);
         }
         /// <summary>
@@ -309,10 +308,10 @@ namespace IssueTracker.Models
             //delete added users, and this issue from them
             if (_addedUsers != null)
             {
-                foreach (var item in _addedUsers)
+                while (_addedUsers.Count > 0)
                 {
-                    item.RemoveIssueFromUser(this);
-                    _addedUsers.Remove(item);
+                    _addedUsers[0].RemoveIssueFromUser(this);
+                    _addedUsers.RemoveAt(0);
                 }
             }
             //delete subissues
@@ -324,7 +323,7 @@ namespace IssueTracker.Models
                 }
             }
             //delete this issue from parent issue and update its progress
-            if (root)
+            if (root && _parentIssue != null)
             {
                 _parentIssue.SubIssues.Remove(this);
                 _parentIssue.calcProgress();

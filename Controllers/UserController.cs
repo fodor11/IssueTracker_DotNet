@@ -20,18 +20,18 @@ namespace IssueTracker.Controllers
             List<UserModel> users = new List<UserModel>();
             List<IssueModel> issues = new List<IssueModel>();
 
-            UserModel user1 = new UserModel("User1", null, null);
+            UserModel user1 = new UserModel("User1");
             users.Add(user1);
-            UserModel user2 = new UserModel("User2", null, null);
+            UserModel user2 = new UserModel("User2");
             users.Add(user2);
-            UserModel user3 = new UserModel("User3", null, null);
+            UserModel user3 = new UserModel("User3");
             users.Add(user3);
 
             IssueModel issue1 = new IssueModel("issue1", "description of issue1", user1);            
             issues.Add(issue1);
-            IssueModel issue11 = new IssueModel("issue11", "description of issue11", issue1, IssueDifficulty.Easy);
+            IssueModel issue11 = new IssueModel("issue11", "description of issue11", issue1.AddedUsers.First(), issue1, IssueDifficulty.Easy);
             issues.Add(issue11);
-            IssueModel issue12 = new IssueModel("issue12", "description of issue12", issue1, IssueDifficulty.Hard);
+            IssueModel issue12 = new IssueModel("issue12", "description of issue12", issue1.AddedUsers.First(), issue1, IssueDifficulty.Hard);
             issues.Add(issue12);
 
             issue11.Progress = 0.5;

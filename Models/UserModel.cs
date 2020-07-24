@@ -144,7 +144,7 @@ namespace IssueTracker.Models
         /// Checks if the given password is the same as the stored one
         /// </summary>
         /// <param name="password">The password to be checked</param>
-        /// <returns>Returns true, if the password is correct, returns false otherwise</returns>
+        /// <returns>Returns true if the password is correct, returns false otherwise</returns>
         public bool CheckPassword(string password)
         {
             if (_distortedPassword.Equals(DistortPassword(password), StringComparison.Ordinal))
@@ -160,13 +160,13 @@ namespace IssueTracker.Models
         /// <returns>Returns the distorted password</returns>
         private string DistortPassword(string password)
         {
-            StringBuilder saltedpswd = new StringBuilder();
+            StringBuilder distortedpswd = new StringBuilder();
             foreach (var item in password)
             {
                 char c = (char)(item * 2);
-                saltedpswd.Append(c);
+                distortedpswd.Append(c);
             }
-             return saltedpswd.ToString();
+             return distortedpswd.ToString();
         }
     }
 }
