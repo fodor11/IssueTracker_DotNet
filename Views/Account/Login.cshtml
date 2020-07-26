@@ -1,0 +1,12 @@
+﻿@model IssueTracker.Models.UserModel
+
+@{
+    ViewBag.Title = "Login";
+
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@Html.ActionLink("Succesful login", "Index", "Issue", null, new { @class = "btn btn-primary btn-lg" })
+@Html.ActionLink("Register", "Register",null, new { @class = "btn btn-primary btn-lg" })
