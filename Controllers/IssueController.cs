@@ -14,11 +14,15 @@ namespace IssueTracker.Controllers
         {
             //basic dummies
             UserModel dummyOwner = new UserModel("dummy owner");
+            IssueModel specialSnowflake = new IssueModel("Special snowflake", "The most special issue of them all", dummyOwner, null, IssueDifficulty.Hard, IssueStatus.InProgress, IssuePriority.High);
+            specialSnowflake.Progress = 0.86;
+            specialSnowflake.SuspendIssue();
             List<IssueModel> dummyIssues = new List<IssueModel> 
             { 
                 new IssueModel("Main issue1", "Desription of the issue", dummyOwner),
                 new IssueModel("Main issue2", "Desription of second issue", dummyOwner),
-                new IssueModel("Main issue3", "You guessed right bro. Description of the 3rd issue", dummyOwner)
+                new IssueModel("Main issue3", "You guessed right bro. Description of the 3rd issue", dummyOwner),
+                specialSnowflake
             };
 
             //deeper issues for another view

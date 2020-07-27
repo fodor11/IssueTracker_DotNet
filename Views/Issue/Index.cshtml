@@ -4,7 +4,7 @@
     ViewBag.Title = "Issues";
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="page-header"><h2>@ViewBag.Title</h2></div>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -21,16 +21,7 @@
             @Html.DisplayNameFor(model => model.Progress)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CreationDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.StartingDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FinishingDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DeadLine)
+            @Html.DisplayNameFor(model => model.AddedUsers[0].Name)
         </th>
         <th></th>
     </tr>
@@ -44,19 +35,23 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Progress)
+            <div class="progress">
+                <div class="progress-bar @switch (item.Status) //set color of the progress bar
+                                        {                         
+                                            case IssueTracker.Models.IssueStatus.Suspended: <text>bg-danger</text>;
+                                                break;
+                                            case IssueTracker.Models.IssueStatus.Finished: <text>bg-success</text>;
+                                                break;
+                                            default: <text>bg-info</text>;
+                                                break;
+                                        }"
+                     role="progressbar"
+                     style="width: @(item.Progress*100)%"
+                     aria-valuenow="@item.Progress" aria-valuemin="0" aria-valuemax="1"></div>
+            </div>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CreationDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartingDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FinishingDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DeadLine)
+            @Html.DisplayFor(modelItem => item.AddedUsers[0].Name)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
