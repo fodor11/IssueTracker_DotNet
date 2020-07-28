@@ -9,7 +9,7 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
+<table class="table custom-table-hover">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.IssueName)
@@ -23,21 +23,24 @@
         <th>
             @Html.DisplayNameFor(model => model.AddedUsers[0].Name)
         </th>
-        <th></th>
+        <th><!--Details--></th>
+        <th><!--Edit--></th>
+        <th><!--Delete--></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.IssueName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            <div class="progress">
-                <div class="progress-bar @switch (item.Status) //set color of the progress bar
-                                        {                         
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IssueName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar @switch (item.Status) //set color of the progress bar
+                                        {
                                             case IssueTracker.Models.IssueStatus.Suspended: <text>bg-danger</text>;
                                                 break;
                                             case IssueTracker.Models.IssueStatus.Finished: <text>bg-success</text>;
@@ -45,20 +48,47 @@
                                             default: <text>bg-info</text>;
                                                 break;
                                         }"
-                     role="progressbar"
-                     style="width: @(item.Progress*100)%"
-                     aria-valuenow="@item.Progress" aria-valuemin="0" aria-valuemax="1"></div>
-            </div>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AddedUsers[0].Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+                         role="progressbar"
+                         style="width: @(item.Progress*100)%"
+                         aria-valuenow="@item.Progress" aria-valuemin="0" aria-valuemax="1"></div>
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AddedUsers[0].Name)
+            </td>
+            <td class="actionTD">
+                <!-- DETAILS -->
+                <a href="#@item.IssueName" data-toggle="collapse" aria-expanded="false">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi - caret - down - fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                    </svg>
+                </a>
+            </td>
+            <td class="actionTD">
+                <a href="@Url.Action("Edit", "Issue")">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" />
+                        <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" />
+                    </svg>
+                </a>
+            </td>
+            <td class="actionTD">
+                <a href="@Url.Action("Delete", "Issue")">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z" />
+                        <path fill-rule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z" />
+                    </svg>
+                </a>
+            </td>
+        </tr>
+        <tr class="collapsing-tr">
+            <td colspan="7">
+                <div class="collapse" id="@item.IssueName">
+                    <!--TODO: IssueID instead of name! -> also in the details <a> tag-->
+                    <p>Here are the details for @item.IssueName.</p>
+                </div>
+            </td>
+        </tr>
+    }
 
 </table>

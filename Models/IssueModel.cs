@@ -250,9 +250,9 @@ namespace IssueTracker.Models
         /// Sets the status to finished, progress to 100%, and sets the finishing date. Does the same to sub issues.
         /// </summary>
         public void FinishIssue()
-        {
-            _status = IssueStatus.Finished;
+        {            
             Progress = 1.0;
+            _status = IssueStatus.Finished;
             if (_finishingDate == default(DateTime))
             {
                 _finishingDate = DateTime.Today;

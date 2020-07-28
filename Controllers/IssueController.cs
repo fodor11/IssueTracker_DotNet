@@ -14,14 +14,23 @@ namespace IssueTracker.Controllers
         {
             //basic dummies
             UserModel dummyOwner = new UserModel("dummy owner");
-            IssueModel specialSnowflake = new IssueModel("Special snowflake", "The most special issue of them all", dummyOwner, null, IssueDifficulty.Hard, IssueStatus.InProgress, IssuePriority.High);
+            IssueModel specialSnowflake = new IssueModel("Special_snowflake", "The most special issue of them all, but also suspended", dummyOwner, null, IssueDifficulty.Hard, IssueStatus.InProgress, IssuePriority.High);
             specialSnowflake.Progress = 0.86;
             specialSnowflake.SuspendIssue();
-            List<IssueModel> dummyIssues = new List<IssueModel> 
+            IssueModel mainIssue1 = new IssueModel("Main_issue1", "Desription of the issue, it is finished", dummyOwner, null, IssueDifficulty.Easy, IssueStatus.InProgress, IssuePriority.Low);
+            mainIssue1.FinishIssue();
+            IssueModel mainIssue2 = new IssueModel("Main_issue2", "Desription of second issue, 46% progress", dummyOwner);
+            mainIssue2.Progress = 0.46;
+            IssueModel mainIssue3 = new IssueModel("Main_issue3", "You guessed right bro. Description of the 3rd issue. Just started", dummyOwner);
+            mainIssue3.StartIssue();
+
+
+
+            List< IssueModel> dummyIssues = new List<IssueModel> 
             { 
-                new IssueModel("Main issue1", "Desription of the issue", dummyOwner),
-                new IssueModel("Main issue2", "Desription of second issue", dummyOwner),
-                new IssueModel("Main issue3", "You guessed right bro. Description of the 3rd issue", dummyOwner),
+                mainIssue1,
+                mainIssue2,
+                mainIssue3,
                 specialSnowflake
             };
 

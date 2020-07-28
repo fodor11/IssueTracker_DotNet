@@ -22,6 +22,42 @@ textarea {
     max-width: 280px;
 }
 
+/*----------------Tables----------------*/
+
+/* Vertical align */
 .table td {
     vertical-align: middle;
 }
+
+/* Dark borders on hover */
+.custom-table-hover td {
+    border-bottom: 1px inset; /*Placeholder, so when the last row is hovered, the content below doesn't get shifted*/
+}
+.custom-table-hover tbody tr:hover td {
+    border-bottom: 1px solid currentColor;
+    border-top-color: currentColor;
+}
+
+/* td for action buttons */
+.table .actionTD {
+    padding: 0rem;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* collapsing tr */
+.table .collapsing-tr td {
+    padding: 0px; 
+    border: none;
+}
+.table .collapsing-tr td div p {
+    padding: 1rem;
+    margin-bottom: 0px;
+}
+
+
+    /* ---------------------others--------------------- */
+    /* change progress bar bg color*/
+    .progress {
+        background-color: #ebebeb;
+    }
