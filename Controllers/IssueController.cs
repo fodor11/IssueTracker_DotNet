@@ -9,8 +9,9 @@ namespace IssueTracker.Controllers
 {
     public class IssueController : Controller
     {
+
         // GET: Issue
-        public ActionResult Index()
+        public ActionResult Index(int id = -1)
         {
             //basic dummies
             UserModel dummyOwner = new UserModel("dummy owner");
@@ -24,35 +25,37 @@ namespace IssueTracker.Controllers
             IssueModel mainIssue3 = new IssueModel("Main_issue3", "You guessed right bro. Description of the 3rd issue. Just started", dummyOwner);
             mainIssue3.StartIssue();
 
-
-
-            List< IssueModel> dummyIssues = new List<IssueModel> 
-            { 
+            List<IssueModel> dummyIssues = new List<IssueModel>
+            {
                 mainIssue1,
                 mainIssue2,
                 mainIssue3,
                 specialSnowflake
             };
 
-            //deeper issues for another view
+            //deeper issues 
             //List<UserModel> users = new List<UserModel>();
-            //UserModel user1 = new UserModel("User1");
+            UserModel user1 = new UserModel("User1");
             //users.Add(user1);
             //UserModel user2 = new UserModel("User2");
             //users.Add(user2);
             //UserModel user3 = new UserModel("User3");
             //users.Add(user3);
 
-            //IssueModel issue1 = new IssueModel("issue1", "description of issue1", user1);
-            //dummyIssues.Add(issue1);
-            //IssueModel issue11 = new IssueModel("issue11", "description of issue11", issue1.AddedUsers.First(), issue1, IssueDifficulty.Easy);
+            IssueModel issue1 = new IssueModel("issue1", "Description of issue1. This one has got children", user1);
+            dummyIssues.Add(issue1);
+            IssueModel issue11 = new IssueModel("issue11", "description of issue11", issue1.AddedUsers.First(), issue1, IssueDifficulty.Easy);
             //dummyIssues.Add(issue11);
-            //IssueModel issue12 = new IssueModel("issue12", "description of issue12", issue1.AddedUsers.First(), issue1, IssueDifficulty.Hard);
+            IssueModel issue12 = new IssueModel("issue12", "description of issue12", issue1.AddedUsers.First(), issue1, IssueDifficulty.Hard);
             //dummyIssues.Add(issue12);
-            //issue11.Progress = 0.5;
-            //issue12.Progress = 0.7;
+            issue11.Progress = 0.5;
+            issue12.Progress = 0.7;
 
-            return View(dummyIssues);
+            if (id >= 0 && dummyIssues[id].SubIssues != null)
+            {
+                return View(dummyIssues[id].SubIssues);
+            }
+            else return View(dummyIssues);
         }
 
         // GET: Issue/Details/5

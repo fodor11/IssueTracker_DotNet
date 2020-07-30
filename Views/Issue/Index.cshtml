@@ -1,7 +1,14 @@
 ﻿@model IEnumerable<IssueTracker.Models.IssueModel>
 
 @{
-    ViewBag.Title = "Issues";
+    if (Model.First().ParentIssue != null)
+    {
+        ViewBag.Title = Model.First().ParentIssue.IssueName + "'s sub issues";
+    }
+    else
+    {
+        ViewBag.Title = "Issues";
+    }
 }
 
 
@@ -15,6 +22,7 @@
         <p>
             @Html.ActionLink("Create New", "Create")
         </p>
+        <!-- TODO: link back to parent issue -->
     </div>
 </div>
 <div class="row">
@@ -75,7 +83,17 @@
                 }
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IssueName)
+                    @if (item.SubIssues != null && item.SubIssues.Count > 0) /*TODO: id = item.id instead of list index*/
+                    {
+                        <a href="@Url.Action("Index","Issue", new {id = Model.ToList().IndexOf(item)})" class="issueLink">
+                            @Html.DisplayFor(modelItem => item.IssueName) »
+                        </a>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.IssueName)
+                    }
+
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Priority)

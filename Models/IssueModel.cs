@@ -173,6 +173,13 @@ namespace IssueTracker.Models
             get { return _deadline; }
             set { _deadline = value; }
         }
+        /// <summary>
+        /// Returns the parent issue
+        /// </summary>
+        public IssueModel ParentIssue 
+        { 
+            get { return _parentIssue; }
+        }
         public IssueModel() { }
         /// <summary>
         /// Constructor of an issue

@@ -82,3 +82,8 @@ textarea {
 .flipCaret{
     transform: rotate(180deg);
 }
+
+/* No underline link */
+a:hover.issueLink {
+    text-decoration: none;
+}
