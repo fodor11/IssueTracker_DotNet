@@ -22,7 +22,7 @@ textarea {
     max-width: 280px;
 }
 
-/*----------------Tables----------------*/
+/*---------------- Tables ----------------*/
 
 /* Vertical align */
 .table td {
@@ -30,8 +30,11 @@ textarea {
 }
 
 /* Dark borders on hover */
+.custom-table-hover{
+    
+}
 .custom-table-hover td {
-    border-bottom: 1px inset; /*Placeholder, so when the last row is hovered, the content below doesn't get shifted*/
+    border-bottom: 1px solid transparent; /*Placeholder, so when the last row is hovered, the content below doesn't get shifted*/
 }
 .custom-table-hover tbody tr:hover td {
     border-bottom: 1px solid currentColor;
@@ -50,14 +53,32 @@ textarea {
     padding: 0px; 
     border: none;
 }
-.table .collapsing-tr td div p {
-    padding: 1rem;
-    margin-bottom: 0px;
+.table .collapsing-tr td div .collapseContent {
+    padding: 1.5rem;
 }
 
+/* Giving a max width for the description column */
+.shortDecriptionTd {
+    max-width: 10rem;
+}
 
-    /* ---------------------others--------------------- */
-    /* change progress bar bg color*/
-    .progress {
-        background-color: #ebebeb;
-    }
+/* ---------------------others--------------------- */
+/* change progress bar bg color*/
+.progress {
+    background-color: #ebebeb;
+}
+
+/* padding for the title of the site, to move it further from the navbar */
+.page-header {
+    padding-top: 1rem;
+}
+
+/* For the rotation of carets on click */
+.rotatingCaret {
+    -moz-transition: transform 0.5s;
+    -webkit-transition: transform 0.5s;
+    transition: transform 0.5s;
+}
+.flipCaret{
+    transform: rotate(180deg);
+}

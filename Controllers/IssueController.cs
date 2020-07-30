@@ -17,7 +17,7 @@ namespace IssueTracker.Controllers
             IssueModel specialSnowflake = new IssueModel("Special_snowflake", "The most special issue of them all, but also suspended", dummyOwner, null, IssueDifficulty.Hard, IssueStatus.InProgress, IssuePriority.High);
             specialSnowflake.Progress = 0.86;
             specialSnowflake.SuspendIssue();
-            IssueModel mainIssue1 = new IssueModel("Main_issue1", "Desription of the issue, it is finished", dummyOwner, null, IssueDifficulty.Easy, IssueStatus.InProgress, IssuePriority.Low);
+            IssueModel mainIssue1 = new IssueModel("Main_issue1", "Desription of the issue, it is finished. However lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dictum sem non lorem efficitur feugiat. Duis eu arcu eget odio imperdiet rhoncus. Praesent eu faucibus orci. Curabitur vel turpis risus. Suspendisse fermentum neque sit amet consequat tincidunt. Etiam varius purus rutrum feugiat vulputate. Sed lacus ante, ullamcorper sed diam at, fermentum mattis nunc. Pellentesque ac ligula eget risus cursus ultricies in vitae nunc. Vestibulum interdum vel lectus eget vestibulum. Ut ut mi quis velit faucibus fringilla nec sollicitudin enim. Nunc enim orci, convallis ornare lectus non, mollis vehicula felis.", dummyOwner, null, IssueDifficulty.Easy, IssueStatus.InProgress, IssuePriority.Low);
             mainIssue1.FinishIssue();
             IssueModel mainIssue2 = new IssueModel("Main_issue2", "Desription of second issue, 46% progress", dummyOwner);
             mainIssue2.Progress = 0.46;

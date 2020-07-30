@@ -3,9 +3,9 @@
 @{
     ViewBag.Title = "Register";
 }
-
-<h2>@ViewBag.Title</h2>
-
+<div class="page-header">
+    <h2>@ViewBag.Title</h2>
+</div>
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
